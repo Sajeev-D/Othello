@@ -58,168 +58,91 @@ int main(void) {
   board[(n / 2)][(n / 2) - 1] = 'B';
   board[(n / 2) - 1][(n / 2)] = 'B';
 
-  printf("Computer plays (B/W): ");  // Black moves first
+  printf("Computer plays (B/W): ");
   scanf(" %c", &computerMove);
   printBoard(board, n);
 
-  char turn;
-  int rowHuman;
-  int colHuman;
+  char humanMove = (computerMove == 'B') ? 'W' : 'B';
+  char currentTurn = 'B';  // Black always moves first
   bool gameEnded = false;
-  char rowC;
-  char colC;
-  if (computerMove == 'B') {
-    turn = 'W';
-    if (!checkAvailableMoves(board, n, turn)) {
-      printBoard(board, n);
-      int scoreComputer = 0;
-      int scoreHuman = 0;
-      for (int r = 0; r < n; r++) {
-        for (int c = 0; c < n; c++) {
-          if (board[r][c] == computerMove) {
-            scoreComputer++;
-          }
-        }
-      }
-      scoreHuman = (n * n) - scoreComputer;
-      if (scoreComputer > scoreHuman)
-        printf("%c player wins.\n", computerMove);
-      else if (scoreHuman > scoreComputer) {
-        printf("%c player wins.\n", turn);
-      } else
-        printf("Draw.\n");
 
-      return 0;
-    }
-
-    makeMoveComputer(board, n, computerMove);
-
-    printf("Enter move for colour %c (RowCol): ", turn);
-    scanf(" %c%c", &rowC, &colC);
-    rowHuman = rowC - 97;
-    colHuman = colC - 97;
-
-    bool isValid = false;
-
-    if (positionInBounds(n, rowHuman, colHuman) &&
-        board[rowHuman][colHuman] == 'U') {
-      for (int deltaRow = -1; deltaRow <= 1; deltaRow++) {
-        for (int deltaCol = -1; deltaCol <= 1; deltaCol++) {
-          if (checkLegalInDirection(board, n, rowC - 97, colC - 97, turn,
-                                    deltaRow, deltaCol)) {
-            isValid = true;
-            flipPosition(board, rowC - 97, colC - 97, turn, deltaRow, deltaCol);
-          }
-        }
-      }
-    }
-    if (isValid == true) {
-      board[rowHuman][colHuman] = turn;
-      if (!checkAvailableMoves(board, n, turn)) {
-        printBoard(board, n);
-        int scoreComputer = 0;
-        int scoreHuman = 0;
-        for (int r = 0; r < n; r++) {
-          for (int c = 0; c < n; c++) {
-            if (board[r][c] == computerMove) {
-              scoreComputer++;
-            }
-          }
-        }
-        scoreHuman = (n * n) - scoreComputer;
-        if (scoreComputer > scoreHuman)
-          printf("%c player wins.\n", computerMove);
-        else if (scoreHuman > scoreComputer) {
-          printf("%c player wins.\n", turn);
-        } else
-          printf("Draw.\n");
-
-        return 0;
+  while (!gameEnded) {
+    if (currentTurn == computerMove) {
+      // Computer's turn
+      if (checkAvailableMoves(board, n, computerMove)) {
+        makeMoveComputer(board, n, computerMove);
+      } else {
+        printf("%c player has no valid move.\n", computerMove);
       }
     } else {
-      printf("Invalid move.\n%c player wins.\n", computerMove);
-      return 0;
-    }
-    printBoard(board, n);
+      // Human's turn
+      if (checkAvailableMoves(board, n, humanMove)) {
+        char rowC, colC;
+        int rowHuman, colHuman;
+        bool isValid = false;
 
-    // Write while loop if computer starts first:
-  } else {
-    while (gameEnded == false) {
-      turn = 'B';
+        do {
+          printf("Enter move for colour %c (RowCol): ", humanMove);
+          scanf(" %c%c", &rowC, &colC);
+          rowHuman = rowC - 97;
+          colHuman = colC - 97;
 
-      if (!checkAvailableMoves(board, n, turn)) {
-        printBoard(board, n);
-        int scoreComputer = 0;
-        int scoreHuman = 0;
-        for (int r = 0; r < n; r++) {
-          for (int c = 0; c < n; c++) {
-            if (board[r][c] == computerMove) {
-              scoreComputer++;
-            }
-          }
-        }
-        scoreHuman = (n * n) - scoreComputer;
-        if (scoreComputer > scoreHuman)
-          printf("%c player wins.\n", computerMove);
-        else if (scoreHuman > scoreComputer) {
-          printf("%c player wins.\n", turn);
-        } else
-          printf("Draw.\n");
-
-        return 0;
-      }
-
-      printf("Enter move for colour %c (RowCol): ", turn);
-      scanf(" %c%c", &rowC, &colC);
-      rowHuman = rowC - 97;
-      colHuman = colC - 97;
-
-      bool isValid = false;
-
-      if (positionInBounds(n, rowHuman, colHuman) &&
-          board[rowHuman][colHuman] == 'U') {
-        for (int deltaRow = -1; deltaRow <= 1; deltaRow++) {
-          for (int deltaCol = -1; deltaCol <= 1; deltaCol++) {
-            if (checkLegalInDirection(board, n, rowC - 97, colC - 97, turn,
-                                      deltaRow, deltaCol)) {
-              isValid = true;
-              flipPosition(board, rowC - 97, colC - 97, turn, deltaRow,
-                           deltaCol);
-            }
-          }
-        }
-      }
-      if (isValid == true) {
-        board[rowHuman][colHuman] = turn;
-        if (!checkAvailableMoves(board, n, turn)) {
-          printBoard(board, n);
-          int scoreComputer = 0;
-          int scoreHuman = 0;
-          for (int r = 0; r < n; r++) {
-            for (int c = 0; c < n; c++) {
-              if (board[r][c] == computerMove) {
-                scoreComputer++;
+          if (positionInBounds(n, rowHuman, colHuman) &&
+              board[rowHuman][colHuman] == 'U') {
+            for (int deltaRow = -1; deltaRow <= 1; deltaRow++) {
+              for (int deltaCol = -1; deltaCol <= 1; deltaCol++) {
+                if (checkLegalInDirection(board, n, rowHuman, colHuman, humanMove,
+                                          deltaRow, deltaCol)) {
+                  isValid = true;
+                  flipPosition(board, rowHuman, colHuman, humanMove, deltaRow, deltaCol);
+                }
               }
             }
           }
-          scoreHuman = (n * n) - scoreComputer;
-          if (scoreComputer > scoreHuman)
-            printf("%c player wins.\n", computerMove);
-          else if (scoreHuman > scoreComputer) {
-            printf("%c player wins.\n", turn);
-          } else
-            printf("Draw.\n");
 
-          return 0;
-        }
+          if (!isValid) {
+            printf("Invalid move.\n");
+          }
+        } while (!isValid);
+
+        board[rowHuman][colHuman] = humanMove;
+        printBoard(board, n);
       } else {
-        printf("Invalid move.\n%c player wins.\n", computerMove);
-        return 0;
+        printf("%c player has no valid move.\n", humanMove);
       }
-      printBoard(board, n);
-      makeMoveComputer(board, n, computerMove);
+    }
+
+    // Check if the game has ended
+    if (!checkAvailableMoves(board, n, 'B') && !checkAvailableMoves(board, n, 'W')) {
+      gameEnded = true;
+    } else {
+      // Switch turns
+      currentTurn = (currentTurn == 'B') ? 'W' : 'B';
     }
   }
+
+  // Game has ended, calculate scores
+  int scoreComputer = 0;
+  int scoreHuman = 0;
+  for (int r = 0; r < n; r++) {
+    for (int c = 0; c < n; c++) {
+      if (board[r][c] == computerMove) {
+        scoreComputer++;
+      } else if (board[r][c] == humanMove) {
+        scoreHuman++;
+      }
+    }
+  }
+
+  // Print final board and results
+  printBoard(board, n);
+  if (scoreComputer > scoreHuman)
+    printf("%c player wins.\n", computerMove);
+  else if (scoreHuman > scoreComputer)
+    printf("%c player wins.\n", humanMove);
+  else
+    printf("Draw.\n");
+
   return 0;
 }
 

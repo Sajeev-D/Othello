@@ -1,18 +1,3 @@
-/**
- * @file reversi.c
- * @author <-- Sajeev -->
- * @brief This file is used for APS105 Lab 8. 2023W version
- * @date 2023-03-14
- *
- */
-
-// DO NOT REMOVE THE FOLLOWING LINE
-#if !defined(TESTER_P1) && !defined(TESTER_P2)
-// DO NOT REMOVE THE ABOVE LINE
-// #include "reversi.h"
-// DO NOT REMOVE THE FOLLOWING LINE
-#endif
-// DO NOT REMOVE THE ABOVE LINE
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -36,10 +21,6 @@ int numberOfFlips(char board[][26], int n, int row, int col, char turn,
                   int deltaRow, int deltaCol);
 
 void makeMoveComputer(char board[26][26], int n, char turn);
-//*******************************************************
-// Note: Please only put your main function below
-// DO NOT REMOVE THE FOLLOWING LINE
-#ifndef TESTER_P2
 
 int main(void) {
   int n = 0;
@@ -145,10 +126,6 @@ int main(void) {
 
   return 0;
 }
-
-// DO NOT REMOVE THE FOLLOWING LINE
-#endif
-//*******************************************************
 
 void printBoard(char board[][26], int n) {
   char letterRow = 'a';
